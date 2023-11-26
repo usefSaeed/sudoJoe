@@ -2,8 +2,7 @@ import os
 import random
 import json
 from model.board import Board
-
-GAMES_DIRECTORY = "..\games"
+from globalData import *
 
 
 class gameService:
@@ -20,11 +19,8 @@ class gameService:
         self.extract_game()
         return self._currentBoard
 
-    def get_game_path(self):
-        return GAMES_DIRECTORY + "\\" + str(self._currentGameIndex)
-
     def extract_game(self):
-        with open(self.get_game_path(), 'r') as file:
+        with open(game_path(self._currentGameIndex), 'r') as file:
             game_data = json.load(file)
         self._currentBoard = Board(game_data['value'])
         self._diff = game_data['difficulty']
