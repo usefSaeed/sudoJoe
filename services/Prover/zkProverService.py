@@ -1,7 +1,7 @@
 import json
 from model.board import Board
 
-GAMES_DIRECTORY = "..\games"
+GAMES_DIRECTORY = "..\\..\\games\\"
 
 from globalData import *
 
@@ -12,6 +12,7 @@ class ZKProverService:
             game_data = json.load(file)
         self._currentBoard = Board(game_data['value'])
         self._solution = Board(game_data['solution'])
-        self._solution.show()
 
-zs = ZKProverService(3)
+
+# zs = ZKProverService(3)
+

@@ -16,10 +16,10 @@ class gameService:
         games = [g for g in os.listdir(GAMES_DIRECTORY)]
         random_game_file = random.choice(games)
         self._currentGameIndex = int(random_game_file)
-        self.extract_game()
+        self._extract_game()
         return self._currentBoard
 
-    def extract_game(self):
+    def _extract_game(self):
         with open(game_path(self._currentGameIndex), 'r') as file:
             game_data = json.load(file)
         self._currentBoard = Board(game_data['value'])
@@ -32,4 +32,3 @@ class gameService:
 
 gs = gameService()
 gs.generate_random_game()
-gs.extract_game()
