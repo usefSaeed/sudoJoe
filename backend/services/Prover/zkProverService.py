@@ -1,15 +1,13 @@
-import json
-from model.board import Board
+from backend.model.board import Board
 
 GAMES_DIRECTORY = "..\\..\\games\\"
 
-from globalData import *
+from backend.globalData import *
 
 
 class ZKProverService:
     def __init__(self, gameIndex):
-        with open(game_path(gameIndex), 'r') as file:
-            game_data = json.load(file)
+        game_data = readJSON(game_path(gameIndex))
         self._currentBoard = Board(game_data['value'])
         self._solution = Board(game_data['solution'])
 

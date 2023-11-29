@@ -1,6 +1,6 @@
-from model.board import Board
-from services.Prover.zkProverService import ZKProverService
-import random as r
+from backend.model.board import Board
+from backend.services.Prover.zkProverService import ZKProverService
+from backend.globalData import permute
 
 
 class ColouringProver(ZKProverService):
@@ -10,13 +10,16 @@ class ColouringProver(ZKProverService):
 
     def __generate_permutation(self):
         nums = [i for i in range(1,10)]
-        r.shuffle(nums)
+        permute(nums)
         self.__P += nums
 
     def prove(self):
         self.__generate_permutation()
+        self._solution.show()
         permuted_solution: Board = self._solution
         permuted_solution.permute(self.__P)
+
+
 
 
 cpzk = ColouringProver(1)
