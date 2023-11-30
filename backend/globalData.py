@@ -25,6 +25,11 @@ def salty_sha256(value,nonce):
     return hashlib.sha256(json.dumps(data, sort_keys=True).encode()).hexdigest()
 
 
+def salty_sha256_mod(value,nonce,n):
+    hash_value = salty_sha256(value,nonce)
+    return int(hash_value, 16) % n
+
+
 def permute(arr):
     random.shuffle(arr)
 
