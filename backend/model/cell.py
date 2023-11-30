@@ -10,7 +10,7 @@ class Cell:
         return str(self.__value) if self.__value is not None else "_"
 
     def __int__(self):
-        return self.__value
+        return self.__value if self.__value is not None else 0
 
     def set(self, new_value):
         if new_value in self.valid_values:

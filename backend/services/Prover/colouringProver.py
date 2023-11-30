@@ -13,11 +13,13 @@ class ColouringProver(ZKProverService):
         permute(nums)
         self.__P += nums
 
-    def prove(self):
-        self.__generate_permutation()
-        self._solution.show()
-        permuted_solution: Board = self._solution
-        permuted_solution.permute(self.__P)
+    def prove(self,fiatShaCount):
+        for fiatShaIdx in fiatShaCount:
+            self.__generate_permutation()
+            permuted_solution: Board = self._solution
+            permuted_solution.permute(self.__P)
+            committedSolution = permuted_solution.commit()
+
 
 
 

@@ -22,3 +22,18 @@ class Board(AbstractBoard):
             for c in self.valid_coordinate:
                 self.__grid[r][c].set(p[int(self.__grid[r][c])])
 
+    def commit(self):
+        committedSolution = [[None for _ in range(GAME_SIDE_LENGTH + 1)] for _ in range(GAME_SIDE_LENGTH + 1)]
+        for r in self.valid_coordinate:
+            for c in self.valid_coordinate:
+                committedSolution[r][c] = self.__grid[r][c].commit_cell()
+        return committedSolution
+
+    def __int__(self):
+        result = 0
+        for r in self.valid_coordinate:
+            for c in self.valid_coordinate:
+                digitIdx = r*GAME_SIDE_LENGTH+c
+                result += self.__grid[r][c] * 10**digitIdx
+        return result
+
