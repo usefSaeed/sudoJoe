@@ -6,7 +6,7 @@ class ZKProverService:
     def __init__(self, gameIndex):
         game_data = readJSON(game_path(gameIndex))
         self._game = Board(game_data['value'])
-        self._solution = Board(game_data['solution'])
+        self._solution = self._game.extract_solution(game_data['solution'])
 
 
 # zs = ZKProverService(3)

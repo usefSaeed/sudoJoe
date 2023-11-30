@@ -1,11 +1,11 @@
 from backend.globalData import generate_nonce,salty_sha256
 
 class Cell:
-    valid_values = {1, 2, 3, 4, 5, 6, 7, 8, 9, None}
+    __VALID_VALUES = [1, 2, 3, 4, 5, 6, 7, 8, 9, None]
 
-    def __init__(self, value=None,row=0,col=0):
+    def __init__(self, value=None):
         self.__isOriginallyFilledIn = value is not None
-        self.__set_all(value,row,col)
+        self.set(value)
         self.__commitment = None
         self.__nonce = None
 
@@ -16,24 +16,13 @@ class Cell:
         return self.__value if self.__value is not None else 0
 
     def set(self, new_value):
-        if new_value in self.valid_values:
+        if new_value in self.__VALID_VALUES:
             self.__value = new_value
         else:
             raise ValueError("Invalid value for SudokuCell")
 
-    def __set_all(self, new_value, row, col):
-        self.set(new_value)
-        if row in self.valid_values[:-1] and col in self.valid_values[:-1]:
-            self.__row = row
-            self.__col = col
-        else:
-            raise ValueError("Invalid cell coordinates for SudokuCell")
-
     def is_empty(self):
         return self.__value is None
-
-    def get_coordinates(self):
-        return self.__row,self.__col
 
     def commit_cell(self):
         self.__nonce = generate_nonce()
