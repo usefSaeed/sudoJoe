@@ -7,6 +7,9 @@ import os
 GAME_SIDE_LENGTH = 9
 SUBGRID_SIDE_LENGTH = 3
 GAMES_DIRECTORY = "D:\Projects\sudoJoe\games"
+ROW = 0
+COLUMN = 1
+SUBGRID = 2
 
 
 def game_path(gameIndex):
