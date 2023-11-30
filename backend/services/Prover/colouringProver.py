@@ -1,7 +1,7 @@
 from backend.model.board import Board
 from backend.model.colouringSJZK import ColouringSJZK
 from backend.services.Prover.zkProverService import ZKProverService
-from backend.globalData import permute,salty_sha256_mod,GAME_SIDE_LENGTH,ROW,COLUMN,SUBGRID
+from backend.globalData import permute,salty_sha256_mod,GAME_SIDE_LENGTH
 
 
 class ColouringProver(ZKProverService):
@@ -30,11 +30,11 @@ class ColouringProver(ZKProverService):
     def __proof_handler(self, proof_num):
         match proof_num:
             case n if n <  GAME_SIDE_LENGTH:
-                return self._permuted_solution.reveal(ROW, n)
+                return self._permuted_solution.reveal_row(n)
             case n if n <  GAME_SIDE_LENGTH * 2:
-                return self._permuted_solution.reveal(COLUMN, n)
+                return self._permuted_solution.reveal_column(n - GAME_SIDE_LENGTH)
             case n if n <  GAME_SIDE_LENGTH * 3:
-                return self._permuted_solution.reveal(SUBGRID, n)
+                return self._permuted_solution.reveal_subgrid(n - GAME_SIDE_LENGTH*2)
             case n if n == GAME_SIDE_LENGTH * 3:
                 return self._permuted_solution.reveal_filled_in_Cells()
 

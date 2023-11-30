@@ -1,5 +1,4 @@
 from backend.model.sudoJoeZK import SudoJoeZK
-from backend.globalData import salty_sha256_mod,GAME_SIDE_LENGTH
 
 
 class ColouringSJZK(SudoJoeZK):

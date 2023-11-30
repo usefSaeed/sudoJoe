@@ -1,8 +1,5 @@
 from backend.model.board import Board
-
-GAMES_DIRECTORY = "..\\..\\games\\"
-
-from backend.globalData import *
+from backend.globalData import readJSON,game_path
 
 
 class ZKProverService:

@@ -1,15 +1,12 @@
+import copy
 import hashlib
 import random
 import json
 import os
 
-
 GAME_SIDE_LENGTH = 9
 SUBGRID_SIDE_LENGTH = 3
 GAMES_DIRECTORY = "D:\Projects\sudoJoe\games"
-ROW = 0
-COLUMN = 1
-SUBGRID = 2
 
 
 def game_path(gameIndex):
@@ -17,10 +14,10 @@ def game_path(gameIndex):
 
 
 def generate_nonce():
-    return random.randint(0, 2**256 - 1)
+    return random.randint(0, 2 ** 256 - 1)
 
 
-def salty_sha256(value,nonce):
+def salty_sha256(value, nonce):
     data = {
         "value": value,
         "nonce": nonce,
@@ -28,8 +25,8 @@ def salty_sha256(value,nonce):
     return hashlib.sha256(json.dumps(data, sort_keys=True).encode()).hexdigest()
 
 
-def salty_sha256_mod(value,nonce,n):
-    hash_value = salty_sha256(value,nonce)
+def salty_sha256_mod(value, nonce, n):
+    hash_value = salty_sha256(value, nonce)
     return int(hash_value, 16) % n
 
 
@@ -48,3 +45,7 @@ def get_files_from_dir(path):
 
 def random_pick(arr):
     return random.choice(arr)
+
+
+def copy_object(obj):
+    return copy.deepcopy(obj)
