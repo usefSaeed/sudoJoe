@@ -10,7 +10,7 @@ def hello_world():  # put application's code here
 
 @app.route('/game')
 def generate_game():
-
+    pass
 
 
 if __name__ == '__main__':

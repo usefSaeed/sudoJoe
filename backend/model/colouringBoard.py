@@ -1,8 +1,9 @@
+from backend.model.colouringZKP import ColouringZKP
 from backend.model.sudoJoeBoard import SudoJoeBoard
-from backend.globalData import GAME_SIDE_LENGTH, SUBGRID_SIDE_LENGTH, TYPE_COUNT, pseudo_random_num,xor_all_mod_n
+from backend.backendGlobal import GAME_SIDE_LENGTH, SUBGRID_SIDE_LENGTH, TYPE_COUNT, pseudo_random_num,xor_all_mod_n
 
 
-class ColouringSJZK(SudoJoeBoard):
+class ColouringBoard(SudoJoeBoard):
     CHALLENGE_RANGE = GAME_SIDE_LENGTH * TYPE_COUNT + 1
 
     def __init__(self,solution,P):
@@ -64,3 +65,9 @@ class ColouringSJZK(SudoJoeBoard):
                 current_cell = self._grid[r][c]
                 if current_cell.is_originally_filled_in():
                     self.__revealedCells.append(current_cell.reveal_cell())
+
+    def construct_proof(self):
+        assert self.__committedSolution is not None
+        assert len(self.__revealedCells) >= GAME_SIDE_LENGTH
+        return ColouringZKP(self.__committedSolution,self.__revealedCells)
+

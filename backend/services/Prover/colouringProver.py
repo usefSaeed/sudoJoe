@@ -1,15 +1,15 @@
-from backend.model.colouringSJZK import ColouringSJZK
+from backend.model.colouringBoard import ColouringBoard
 from backend.services.Prover.zkProverService import ZKProverService
-from backend.globalData import permute,salty_sha256_mod,GAME_SIDE_LENGTH
-import math
+from backend.backendGlobal import permute,GAME_SIDE_LENGTH,ROW,COL,SUBGRID,TYPE_COUNT,get_exponent
 
 
 class ColouringProver(ZKProverService):
-    verifying_options_count = 28
+    CHALLENGE_RANGE = GAME_SIDE_LENGTH * TYPE_COUNT + 1
 
     def __init__(self, gameIndex):
         super().__init__(gameIndex)
-        self._permuted_solution = None
+        self.__gameIndex = gameIndex
+        self._colouring_prover = None
         self.__P = [None]
 
     def __generate_permutation(self):
@@ -19,34 +19,31 @@ class ColouringProver(ZKProverService):
         self.__P += nums
 
     def prove(self,fiatShaCount=1000,tolerable_perc=None):
-        sudoJoeProofs = []
-        self._game.show()
-        gameInt = int(self._game)
         if tolerable_perc is not None:
-            cheating_perc = (self.verifying_options_count-1)/self.verifying_options_count
-            fiatShaCount = math.ceil(math.log(tolerable_perc,cheating_perc))
+            cheating_perc = (self.CHALLENGE_RANGE-1)/self.CHALLENGE_RANGE
+            fiatShaCount = get_exponent(tolerable_perc,cheating_perc)
+        self._game.show()
         for fiatShaIdx in range(fiatShaCount):
             self.__generate_permutation()
-            self._permuted_solution = self._solution.extract_permutation(self.__P)
+            self._colouring_prover = ColouringBoard(self._solution, self.__P)
             print(self.__P)
-            self._permuted_solution.show()
-            committedSolution = self._permuted_solution.commit()
-            proofIndicator = salty_sha256_mod(gameInt, fiatShaIdx, self.verifying_options_count)
-            revealedCells = self.__proof_handler(proofIndicator)
-            zkProof = ColouringSJZK(gameInt,fiatShaIdx,committedSolution,revealedCells)
-            sudoJoeProofs.append(zkProof)
-        return sudoJoeProofs
+            self._colouring_prover.show()
+            self._colouring_prover.commit()
+            challenge = self._colouring_prover.create_challenge()
+            self.__challenge_handler(challenge)
+            zkProof = self._colouring_prover.construct_proof()
+            zkProof.serialize(self.__gameIndex,fiatShaIdx)
 
-    def __proof_handler(self, proof_num):
-        match proof_num:
-            case n if n <  GAME_SIDE_LENGTH:
-                return self._permuted_solution.reveal_row(n)
-            case n if n <  GAME_SIDE_LENGTH * 2:
-                return self._permuted_solution.reveal_col(n - GAME_SIDE_LENGTH)
-            case n if n <  GAME_SIDE_LENGTH * 3:
-                return self._permuted_solution.reveal_subgrid(n - GAME_SIDE_LENGTH*2)
-            case n if n == GAME_SIDE_LENGTH * 3:
-                return self._permuted_solution.reveal_filled_in_cells()
+    def __challenge_handler(self, challenge):
+        match challenge:
+            case n if n <  GAME_SIDE_LENGTH * (ROW + 1):
+                self._colouring_prover.reveal_row(n - GAME_SIDE_LENGTH * ROW)
+            case n if n <  GAME_SIDE_LENGTH * (COL + 1):
+                self._colouring_prover.reveal_col(n - GAME_SIDE_LENGTH * COL)
+            case n if n <  GAME_SIDE_LENGTH * (SUBGRID + 1):
+                self._colouring_prover.reveal_subgrid(n - GAME_SIDE_LENGTH * SUBGRID)
+            case n if n == GAME_SIDE_LENGTH * TYPE_COUNT:
+                self._colouring_prover.reveal_filled_in_cells()
 
 cpzk = ColouringProver(1)
-cpzk.prove(tolerable_perc=0.05)
+cpzk.prove(tolerable_perc=0.005)

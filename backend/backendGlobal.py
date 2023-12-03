@@ -1,6 +1,7 @@
 import copy
 import hashlib
 import json
+import math
 import os
 import functools
 import operator
@@ -14,6 +15,7 @@ COL = 1
 SUBGRID = 2
 TYPE_COUNT = 3
 GAMES_DIRECTORY = "D:\Projects\Grad Project\sudoJoe\\backend\games"
+PROOFS_TEMP_DIRECTORY = "D:\Projects\Grad Project\sudoJoe\\backend\proofs\\"
 
 
 def game_path(gameIndex):
@@ -32,11 +34,6 @@ def salty_sha256(value, nonce):
     return hashlib.sha3_256(json.dumps(data, sort_keys=True).encode()).hexdigest()
 
 
-def salty_sha256_mod(value, nonce, n):
-    hash_value = salty_sha256(value, nonce)
-    return int(hash_value, 16) % n
-
-
 def permute(arr):
     random.shuffle(arr)
 
@@ -45,6 +42,9 @@ def readJSON(path):
     with open(path, 'r') as file:
         return json.load(file)
 
+def writeJSON(path,content):
+    with open(path, 'w') as json_file:
+        json.dump(content,json_file,indent=4)
 
 def get_files_from_dir(path):
     return [_ for _ in os.listdir(path)]
@@ -68,4 +68,10 @@ def pseudo_random_num(seed):
     return random.RandomState(seed)
 
 
+def get_exponent(m,n_power_e):
+    e = math.ceil(math.log(m,n_power_e))
+    return e
 
+
+def get_proof_path(gameIndex,proofIndex):
+    return f"{PROOFS_TEMP_DIRECTORY}game-{gameIndex}-zkp-{proofIndex}.json"

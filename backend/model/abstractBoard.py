@@ -1,4 +1,4 @@
-from backend.globalData import GAME_SIDE_LENGTH
+from backend.backendGlobal import GAME_SIDE_LENGTH
 
 
 class AbstractBoard:
