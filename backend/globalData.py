@@ -1,12 +1,19 @@
 import copy
 import hashlib
-import random
 import json
 import os
+import functools
+import operator
+from numpy import random
+import random as r
 
 GAME_SIDE_LENGTH = 9
 SUBGRID_SIDE_LENGTH = 3
-GAMES_DIRECTORY = "D:\Projects\sudoJoe\\backend\games"
+ROW = 0
+COL = 1
+SUBGRID = 2
+TYPE_COUNT = 3
+GAMES_DIRECTORY = "D:\Projects\Grad Project\sudoJoe\\backend\games"
 
 
 def game_path(gameIndex):
@@ -14,7 +21,7 @@ def game_path(gameIndex):
 
 
 def generate_nonce():
-    return random.randint(0, 2 ** 256 - 1)
+    return r.randint(0, 2 ** 256 - 1)
 
 
 def salty_sha256(value, nonce):
@@ -22,7 +29,7 @@ def salty_sha256(value, nonce):
         "value": value,
         "nonce": nonce,
     }
-    return hashlib.sha256(json.dumps(data, sort_keys=True).encode()).hexdigest()
+    return hashlib.sha3_256(json.dumps(data, sort_keys=True).encode()).hexdigest()
 
 
 def salty_sha256_mod(value, nonce, n):
@@ -49,3 +56,16 @@ def random_pick(arr):
 
 def copy_object(obj):
     return copy.deepcopy(obj)
+
+
+def xor_all_mod_n(hashes,n):
+    hex_hashes = [int(h, 16) for h in hashes]
+    num = (functools.reduce(operator.xor, hex_hashes)) % n
+    return num
+
+
+def pseudo_random_num(seed):
+    return random.RandomState(seed)
+
+
+
