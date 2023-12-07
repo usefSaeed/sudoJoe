@@ -1,5 +1,5 @@
 from backend.model.colouringBoard import ColouringBoard
-from backend.services.Prover.zkProverService import ZKProverService
+from backend.services.zkProverService import ZKProverService
 from backend.backendGlobal import permute,GAME_SIDE_LENGTH,ROW,COL,SUBGRID,TYPE_COUNT,get_exponent
 
 
