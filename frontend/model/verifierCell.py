@@ -1,11 +1,11 @@
-from backend.backendGlobal import generate_nonce,salty_sha256
+from frontend.frontendGlobal import salty_sha256
 
-class Cell:
+class VerifierCell:
     __VALID_VALUES = [1, 2, 3, 4, 5, 6, 7, 8, 9, None]
 
     def __init__(self, value=None):
-        self.__isOriginallyFilledIn = value is not None
-        self.set(value)
+        self.__isFilledIn = value is not None
+        self.__set(value)
         self.__commitment = None
         self.__nonce = None
 
@@ -15,7 +15,7 @@ class Cell:
     def __int__(self):
         return self.__value if self.__value is not None else 0
 
-    def set(self, new_value):
+    def __set(self, new_value):
         if new_value in self.__VALID_VALUES:
             self.__value = new_value
         else:
@@ -24,16 +24,14 @@ class Cell:
     def is_empty(self):
         return self.__value is None
 
-    def commit_cell(self):
-        self.__nonce = generate_nonce()
-        self.__commitment = salty_sha256(self.__value,self.__nonce)
-        return self.__commitment
+    def save_commitment(self,c):
+        self.__commitment = c
 
-    def reveal_cell(self):
-        return self.__value,self.__nonce
+    def verify_commitment(self,value,nonce):
+        return value if salty_sha256(value,nonce)==self.__commitment else 0
 
-    def is_originally_filled_in(self):
-        return self.__isOriginallyFilledIn
+    def is_filled_in(self):
+        return self.__isFilledIn
 
-
-
+    def get_value(self):
+        return self.__value

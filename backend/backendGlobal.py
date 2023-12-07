@@ -15,7 +15,7 @@ COL = 1
 SUBGRID = 2
 TYPE_COUNT = 3
 GAMES_DIRECTORY = "D:\Projects\Grad Project\sudoJoe\\backend\games"
-PROOFS_TEMP_DIRECTORY = "D:\Projects\Grad Project\sudoJoe\\backend\proofs\\"
+PROOFS_TEMP_DIRECTORY = "D:\Projects\Grad Project\sudoJoe\\frontend\proofs\\"
 
 
 def game_path(gameIndex):

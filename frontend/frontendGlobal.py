@@ -13,6 +13,7 @@ ROW = 0
 COL = 1
 SUBGRID = 2
 TYPE_COUNT = 3
+PROOFS_TEMP_DIRECTORY = "D:\Projects\Grad Project\sudoJoe\\frontend\proofs\\"
 
 
 def salty_sha256(value, nonce):
@@ -51,5 +52,5 @@ def get_exponent(m,n_power_e):
     return e
 
 
-
-
+def get_proof_path(gameIndex,proofIndex):
+    return f"{PROOFS_TEMP_DIRECTORY}game-{gameIndex}-zkp-{proofIndex}.json"

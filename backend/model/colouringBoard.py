@@ -1,9 +1,9 @@
 from backend.model.colouringZKP import ColouringZKP
-from backend.model.sudoJoeBoard import SudoJoeBoard
+from backend.model.proverBoard import ProverBoard
 from backend.backendGlobal import GAME_SIDE_LENGTH, SUBGRID_SIDE_LENGTH, TYPE_COUNT, pseudo_random_num,xor_all_mod_n
 
 
-class ColouringBoard(SudoJoeBoard):
+class ColouringBoard(ProverBoard):
     CHALLENGE_RANGE = GAME_SIDE_LENGTH * TYPE_COUNT + 1
 
     def __init__(self,solution,P):
@@ -18,18 +18,19 @@ class ColouringBoard(SudoJoeBoard):
             for c in self.VALID_COORDINATES:
                 self._grid[r][c].set(p[int(self._grid[r][c])])
 
-    def commit(self):
-        self.__committedSolution = [[None for _ in range(GAME_SIDE_LENGTH)] for _ in range(GAME_SIDE_LENGTH)]
-        for r in self.VALID_COORDINATES:
-            for c in self.VALID_COORDINATES:
-                self.__committedSolution[r-1][c-1] = self._grid[r][c].commit_cell()
-
     def __flatten_commitments(self):
         result = []
         for r in self.__committedSolution:
             for c in r:
                 result.append(c)
         return result
+
+    def commit(self):
+        self.__committedSolution = [[None for _ in range(GAME_SIDE_LENGTH)] for _ in range(GAME_SIDE_LENGTH)]
+        for r in self.VALID_COORDINATES:
+            for c in self.VALID_COORDINATES:
+                self.__committedSolution[r-1][c-1] = self._grid[r][c].commit_cell()
+
 
     def create_challenge(self):
         assert self.__committedSolution is not None

@@ -1,4 +1,4 @@
-from backend.model.sudoJoeBoard import SudoJoeBoard
+from backend.model.proverBoard import ProverBoard
 from backend.backendGlobal import get_files_from_dir,GAMES_DIRECTORY,random_pick,readJSON,game_path
 
 
@@ -18,7 +18,7 @@ class gameService:
 
     def _extract_game(self):
         game_data = readJSON(game_path(self._currentGameIndex))
-        self._currentBoard = SudoJoeBoard()
+        self._currentBoard = ProverBoard()
         self._currentBoard.fill_from_file(game_data['value'])
         self._diff = game_data['difficulty']
         self._currentBoard.show()

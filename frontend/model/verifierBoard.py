@@ -1,9 +1,9 @@
-from backend.model.abstractBoard import AbstractBoard
-from backend.model.cell import Cell
-from backend.backendGlobal import GAME_SIDE_LENGTH,copy_object
+from frontend.model.abstractBoard import AbstractBoard
+from frontend.model.verifierCell import VerifierCell
+from frontend.frontendGlobal import GAME_SIDE_LENGTH,copy_object
 
 
-class SudoJoeBoard(AbstractBoard):
+class VerifierBoard(AbstractBoard):
 
     def __init__(self):
         super().__init__()
@@ -15,12 +15,12 @@ class SudoJoeBoard(AbstractBoard):
                 R = r + 1
                 C = c + 1
                 if current_value != 0:
-                    self._grid[R][C] = Cell(current_value)
+                    self._grid[R][C] = VerifierCell(current_value)
                 else:
-                    self._grid[R][C] = Cell()
+                    self._grid[R][C] = VerifierCell()
 
     def clone_board(self,board):
-        assert isinstance(board,SudoJoeBoard)
+        assert isinstance(board, VerifierBoard)
         self._grid = copy_object(board._grid)
 
     def __int__(self):
@@ -33,12 +33,6 @@ class SudoJoeBoard(AbstractBoard):
         result += digitRange**(GAME_SIDE_LENGTH**2 + 1)
         return result
 
-    def extract_solution(self,solution):
-        extractedSolution = copy_object(self)
-        for r in self.VALID_COORDINATES:
-            for c in self.VALID_COORDINATES:
-                extractedSolution._grid[r][c].set(solution[r-1][c-1])
-        return extractedSolution
 
 
 
