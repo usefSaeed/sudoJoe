@@ -27,11 +27,13 @@ class VerifierCell:
     def save_commitment(self,c):
         self.__commitment = c
 
-    def verify_commitment(self,value,nonce):
-        return value if salty_sha256(value,nonce)==self.__commitment else 0
+    def verify_commitment(self,value_nonce_pair):
+        value = value_nonce_pair[0]
+        nonce = value_nonce_pair[1]
+        return value if salty_sha256(value,nonce) == self.__commitment else 0
 
     def is_filled_in(self):
         return self.__isFilledIn
 
-    def get_value(self):
+    def get_real_value(self):
         return self.__value

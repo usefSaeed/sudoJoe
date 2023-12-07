@@ -44,41 +44,57 @@ class ColouringBoard(VerifierBoard):
         i = 0
         revealedValues = []
         for c in self._grid[row_idx + self.VALID_COORDINATES[0]][self.VALID_COORDINATES[0]:]:
-            if not c.verify_commitment(self.__revealedCells[i]):
+            v = c.verify_commitment(self.__revealedCells[i])
+            if not v:
                 return False
-            revealedValues.append(c.get_value())
+            revealedValues.append(v)
             i += 1
         return self.__distinction_check(revealedValues)
 
-
     def verify_col(self,col_idx):
+        i = 0
         revealedValues = []
         for r in self._grid[self.VALID_COORDINATES[0]:]:
             c = r[col_idx + self.VALID_COORDINATES[0]]
-            if not c.verify_commitment:
+            v = c.verify_commitment(self.__revealedCells[i])
+            if not v:
                 return False
-            revealedValues.append(c.get_value())
+            revealedValues.append(v)
+            i += 1
         return self.__distinction_check(revealedValues)
 
     def verify_subgrid(self,subgrid_idx):
+        i = 0
         revealedValues = []
         start_row = (subgrid_idx // SUBGRID_SIDE_LENGTH) * SUBGRID_SIDE_LENGTH + self.VALID_COORDINATES[0]
         start_col = (subgrid_idx % SUBGRID_SIDE_LENGTH) * SUBGRID_SIDE_LENGTH + self.VALID_COORDINATES[0]
         for r in range(start_row,start_row+SUBGRID_SIDE_LENGTH):
             for c in range(start_col,start_col+SUBGRID_SIDE_LENGTH):
                 c = self._grid[r][c]
-                if not c.verify_commitment:
+                v = c.verify_commitment(self.__revealedCells[i])
+                if not v:
                     return False
-                revealedValues.append(c.get_value())
+                revealedValues.append(v)
+                i += 1
         return self.__distinction_check(revealedValues)
 
 
     def verify_filled_in_cells(self):
         filledInCells = self.__get_filled_in()
         assert filledInCells==self.__revealedCells
-        permutation_breaker = [0 for i in range(GAME_SIDE_LENGTH+[self.VALID_COORDINATES[0]])]
+        permutationBreaker = [0 for i in range(GAME_SIDE_LENGTH+[self.VALID_COORDINATES[0]])]
         for i in range(len(filledInCells)):
-            permutation_breaker
+            c = filledInCells[i]
+            permutedValue = c.verify_commitment(self.__revealedCells[i])
+            if not permutedValue:
+                return False
+            realValue = c.get_real_value()
+            if permutationBreaker[realValue] == 0:
+                permutationBreaker[realValue] = permutedValue
+            else:
+                if permutationBreaker[realValue]!=permutedValue
+                    return False
+        return True
 
     def __get_filled_in(self):
         filledInCells = []
