@@ -1,9 +1,6 @@
 from frontend.model.verifierBoard import VerifierBoard
-from frontend.model.verifierCell import VerifierCell
 from frontend.frontendGlobal import GAME_SIDE_LENGTH, SUBGRID_SIDE_LENGTH, TYPE_COUNT, pseudo_random_num,xor_all_mod_n
 
-VALUE = 0
-NONCE = 1
 
 class ColouringBoard(VerifierBoard):
     CHALLENGE_RANGE = GAME_SIDE_LENGTH * TYPE_COUNT + 1
@@ -26,10 +23,14 @@ class ColouringBoard(VerifierBoard):
             for c in self.VALID_COORDINATES:
                 self._grid[r][c].save_commitment(self.__commitments[r-1][c-1])
 
-    def compute_challenge(self):
-        seed = xor_all_mod_n(self.__flatten_commitments(),2**32)
-        rd = pseudo_random_num(seed)
-        return rd.randint(self.CHALLENGE_RANGE)
+    def __get_filled_in(self):
+        filledInCells = []
+        for r in self.VALID_COORDINATES:
+            for c in self.VALID_COORDINATES:
+                c = self._grid[r][c]
+                if c.is_filled_in():
+                    filledInCells.append(c)
+        return filledInCells
 
     def __distinction_check(self, revealedValues):
         distinctValues = [0 for i in range(GAME_SIDE_LENGTH+[self.VALID_COORDINATES[0]])]
@@ -39,6 +40,11 @@ class ColouringBoard(VerifierBoard):
             if distinctValues[i] != 1:
                 return False
         return True
+
+    def compute_challenge(self):
+        seed = xor_all_mod_n(self.__flatten_commitments(),2**32)
+        rd = pseudo_random_num(seed)
+        return rd.randint(self.CHALLENGE_RANGE)
 
     def verify_row(self,row_idx):
         i = 0
@@ -92,18 +98,11 @@ class ColouringBoard(VerifierBoard):
             if permutationBreaker[realValue] == 0:
                 permutationBreaker[realValue] = permutedValue
             else:
-                if permutationBreaker[realValue]!=permutedValue
+                if permutationBreaker[realValue] != permutedValue:
                     return False
         return True
 
-    def __get_filled_in(self):
-        filledInCells = []
-        for r in self.VALID_COORDINATES:
-            for c in self.VALID_COORDINATES:
-                c = self._grid[r][c]
-                if c.is_filled_in():
-                    filledInCells.append(c)
-        return filledInCells
+
 
 
 

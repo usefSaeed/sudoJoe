@@ -75,3 +75,6 @@ def get_exponent(m,n_power_e):
 
 def get_proof_path(gameIndex,proofIndex):
     return f"{PROOFS_TEMP_DIRECTORY}game-{gameIndex}-zkp-{proofIndex}.json"
+
+def get_game_vpath(gameIndex):
+    return f"{PROOFS_TEMP_DIRECTORY}game-{gameIndex}.json"
