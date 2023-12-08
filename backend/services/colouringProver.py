@@ -1,6 +1,7 @@
 from backend.model.colouringBoard import ColouringBoard
 from backend.services.zkProverService import ZKProverService
 from backend.backendGlobal import permute,GAME_SIDE_LENGTH,ROW,COL,SUBGRID,TYPE_COUNT,get_exponent
+from frontend.frontendGlobal import get_proof_title
 
 
 class ColouringProver(ZKProverService):
@@ -22,17 +23,15 @@ class ColouringProver(ZKProverService):
         if tolerable_perc is not None:
             cheating_perc = (self.CHALLENGE_RANGE-1)/self.CHALLENGE_RANGE
             fiatShaCount = get_exponent(tolerable_perc,cheating_perc)
-        self._game.show()
         for fiatShaIdx in range(fiatShaCount):
             self.__generate_permutation()
             self._colouring_prover = ColouringBoard(self._solution, self.__P)
-            print(self.__P)
-            self._colouring_prover.show()
             self._colouring_prover.commit()
             challenge = self._colouring_prover.create_challenge()
             self.__challenge_handler(challenge)
             zkProof = self._colouring_prover.construct_proof()
             zkProof.serialize(self.__gameIndex,fiatShaIdx)
+            print(f"Generated {get_proof_title(self.__gameIndex, fiatShaIdx)}")
 
     def __challenge_handler(self, challenge):
         match challenge:

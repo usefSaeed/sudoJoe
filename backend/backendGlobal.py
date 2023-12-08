@@ -14,8 +14,8 @@ ROW = 0
 COL = 1
 SUBGRID = 2
 TYPE_COUNT = 3
-GAMES_DIRECTORY = "D:\Projects\Grad Project\sudoJoe\\backend\games"
-PROOFS_TEMP_DIRECTORY = "D:\Projects\Grad Project\sudoJoe\\frontend\proofs\\"
+GAMES_DIRECTORY = "C:\#MY Stuff\sudoJoe\\backend\games"
+PROOFS_TEMP_DIRECTORY = "C:\#MY Stuff\sudoJoe\\frontend\proofs"
 
 
 def game_path(gameIndex):
@@ -74,7 +74,7 @@ def get_exponent(m,n_power_e):
 
 
 def get_proof_path(gameIndex,proofIndex):
-    return f"{PROOFS_TEMP_DIRECTORY}game-{gameIndex}-zkp-{proofIndex}.json"
+    return f"{PROOFS_TEMP_DIRECTORY}\\game-{gameIndex}-zkp-{proofIndex}.json"
 
 def get_game_vpath(gameIndex):
-    return f"{PROOFS_TEMP_DIRECTORY}game-{gameIndex}.json"
+    return f"{PROOFS_TEMP_DIRECTORY}\\game-{gameIndex}.json"

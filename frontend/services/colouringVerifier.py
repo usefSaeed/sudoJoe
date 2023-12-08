@@ -1,6 +1,7 @@
-from frontend.model.colouringBoard import ColouringBoard
+from frontend.model.boards.colouringBoard import ColouringBoard
 from frontend.services.zkVerifierService import ZKVerifierService
-from frontend.frontendGlobal import GAME_SIDE_LENGTH,ROW,COL,SUBGRID,TYPE_COUNT,readJSON,get_proof_path
+from frontend.frontendGlobal import GAME_SIDE_LENGTH, ROW, COL, SUBGRID, TYPE_COUNT, readJSON, get_proof_path, \
+    delete_file, get_proof_title,PROOFS_TEMP_DIRECTORY
 
 
 class ColouringVerifier(ZKVerifierService):
@@ -14,23 +15,33 @@ class ColouringVerifier(ZKVerifierService):
 
     def verify(self):
         for proofIdx in range(self.__proofsCount):
-            proofData = readJSON(get_proof_path(self.__gameIndex,proofIdx))
-            self._colouring_prover = ColouringBoard(proofData['commitments'], proofData['revealed'])
+            currentProofPath = get_proof_path(self.__gameIndex,proofIdx)
+            proofData = readJSON(currentProofPath)
+            self.__colouringVerifier = ColouringBoard(proofData['commitments'], proofData['revealed'])
+            self.__colouringVerifier.clone_board(self._game)
+            self.__colouringVerifier.place_commitments()
             challenge = self.__colouringVerifier.compute_challenge()
-            if not self.__challenge_handler(challenge):
+            if not self.__is_bullet_proof(challenge):
+                print("########## PROOF INVALID ##########")
+                print(self.__colouringVerifier.get_proof_bust())
+                delete_all_files(PROOFS_TEMP_DIRECTORY)
                 return False
+            print("Verified",get_proof_title(self.__gameIndex,proofIdx))
+            delete_file(currentProofPath)
+        print("Probability that prover is cheating:",round(100*(((self.CHALLENGE_RANGE-1)/self.CHALLENGE_RANGE)**self.__proofsCount),2),"%")
         return True
 
-    def __challenge_handler(self, challenge):
+    def __is_bullet_proof(self, challenge):
         match challenge:
             case n if n <  GAME_SIDE_LENGTH * (ROW + 1):
-                return self._colouring_prover.verify_row(n - GAME_SIDE_LENGTH * ROW)
+                return self.__colouringVerifier.verify_row(n - GAME_SIDE_LENGTH * ROW)
             case n if n <  GAME_SIDE_LENGTH * (COL + 1):
-                return self._colouring_prover.verify_col(n - GAME_SIDE_LENGTH * COL)
+                return self.__colouringVerifier.verify_col(n - GAME_SIDE_LENGTH * COL)
             case n if n <  GAME_SIDE_LENGTH * (SUBGRID + 1):
-                return self._colouring_prover.verify_subgrid(n - GAME_SIDE_LENGTH * SUBGRID)
+                return self.__colouringVerifier.verify_subgrid(n - GAME_SIDE_LENGTH * SUBGRID)
             case n if n == GAME_SIDE_LENGTH * TYPE_COUNT:
-                return self._colouring_prover.verify_filled_in_cells()
+                return self.__colouringVerifier.verify_filled_in_cells()
 
-cpzk = ColouringVerifier(1,146)
-cpzk.verify()
+
+cvzk = ColouringVerifier(1,146)
+cvzk.verify()

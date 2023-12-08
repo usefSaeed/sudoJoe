@@ -1,4 +1,4 @@
-from frontend.model.abstractBoard import AbstractBoard
+from frontend.model.boards.abstractBoard import AbstractBoard
 from frontend.model.verifierCell import VerifierCell
 from frontend.frontendGlobal import GAME_SIDE_LENGTH,copy_object
 
@@ -15,9 +15,9 @@ class VerifierBoard(AbstractBoard):
                 R = r + 1
                 C = c + 1
                 if current_value != 0:
-                    self._grid[R][C] = VerifierCell(current_value)
+                    self._grid[R][C] = VerifierCell(R,C,current_value)
                 else:
-                    self._grid[R][C] = VerifierCell()
+                    self._grid[R][C] = VerifierCell(R,C)
 
     def clone_board(self,board):
         assert isinstance(board, VerifierBoard)

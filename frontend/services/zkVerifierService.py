@@ -1,4 +1,4 @@
-from frontend.model.verifierBoard import VerifierBoard
+from frontend.model.boards.verifierBoard import VerifierBoard
 from frontend.frontendGlobal import readJSON,get_game_vpath
 
 
@@ -8,7 +8,4 @@ class ZKVerifierService:
         self._game = VerifierBoard()
         self._game.fill_from_file(gameData)
 
-
-
-# zs = ZKProverService(3)
 

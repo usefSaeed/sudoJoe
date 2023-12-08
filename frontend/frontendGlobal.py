@@ -5,6 +5,7 @@ import math
 import os
 import functools
 import operator
+import glob
 from numpy import random
 
 GAME_SIDE_LENGTH = 9
@@ -13,8 +14,7 @@ ROW = 0
 COL = 1
 SUBGRID = 2
 TYPE_COUNT = 3
-PROOFS_TEMP_DIRECTORY = "D:\Projects\Grad Project\sudoJoe\\frontend\proofs\\"
-
+PROOFS_TEMP_DIRECTORY = "C:\#MY Stuff\sudoJoe\\frontend\proofs\\"
 
 def salty_sha256(value, nonce):
     data = {
@@ -51,9 +51,29 @@ def get_exponent(m,n_power_e):
     e = math.ceil(math.log(m,n_power_e))
     return e
 
+def get_proof_title(gameIndex,proofIndex):
+    return f"game-{gameIndex}-zkp-{proofIndex}"
 
 def get_proof_path(gameIndex,proofIndex):
-    return f"{PROOFS_TEMP_DIRECTORY}game-{gameIndex}-zkp-{proofIndex}.json"
+    return f"{PROOFS_TEMP_DIRECTORY}{get_proof_title(gameIndex,proofIndex)}.json"
 
 def get_game_vpath(gameIndex):
     return f"{PROOFS_TEMP_DIRECTORY}game-{gameIndex}.json"
+
+def delete_file(path):
+    try:
+        os.remove(path)
+    except FileNotFoundError:
+        pass
+    except Exception:
+        pass
+
+
+def delete_all_files(directory):
+    try:
+        files = glob.glob(os.path.join(directory, '*'))
+        for file in files:
+            delete_file(file)
+    except Exception:
+        pass
+

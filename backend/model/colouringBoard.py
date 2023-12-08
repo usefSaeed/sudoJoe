@@ -41,17 +41,17 @@ class ColouringBoard(ProverBoard):
     def reveal_row(self,row_idx):
         assert self.__committedSolution is not None
         self.__revealedCells = [i.reveal_cell()
-                        for i in self._grid[row_idx + self.VALID_COORDINATES[0]][self.VALID_COORDINATES[0]:]]
+                        for i in self._grid[row_idx + 1][1:]]
 
     def reveal_col(self,col_idx):
         assert self.__committedSolution is not None
-        self.__revealedCells = [r[col_idx + self.VALID_COORDINATES[0]].reveal_cell()
-                        for r in self._grid[self.VALID_COORDINATES[0]:]]
+        self.__revealedCells = [r[col_idx + 1].reveal_cell()
+                        for r in self._grid[1:]]
 
     def reveal_subgrid(self,subgrid_idx):
         assert self.__committedSolution is not None
-        start_row = (subgrid_idx // SUBGRID_SIDE_LENGTH) * SUBGRID_SIDE_LENGTH + self.VALID_COORDINATES[0]
-        start_col = (subgrid_idx % SUBGRID_SIDE_LENGTH) * SUBGRID_SIDE_LENGTH + self.VALID_COORDINATES[0]
+        start_row = (subgrid_idx // SUBGRID_SIDE_LENGTH) * SUBGRID_SIDE_LENGTH + 1
+        start_col = (subgrid_idx % SUBGRID_SIDE_LENGTH) * SUBGRID_SIDE_LENGTH + 1
         self.__revealedCells = [None for i in range(GAME_SIDE_LENGTH)]
         fillingIdx = 0
         for r in range(start_row,start_row+SUBGRID_SIDE_LENGTH):
