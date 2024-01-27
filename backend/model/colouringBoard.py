@@ -22,7 +22,6 @@ class ColouringBoard(ProverBoard):
         result = ""
         for r in self.__committedSolution:
             for c in r:
-                print("c",c)
                 result += c
         return result
 
