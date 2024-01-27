@@ -14,8 +14,8 @@ ROW = 0
 COL = 1
 SUBGRID = 2
 TYPE_COUNT = 3
-GAMES_DIRECTORY = "C:\#MY Stuff\sudoJoe\\backend\games"
-PROOFS_TEMP_DIRECTORY = "C:\#MY Stuff\sudoJoe\\frontend\proofs"
+GAMES_DIRECTORY = ".\\backend\games"
+PROOFS_TEMP_DIRECTORY = ".\\frontend\proofs"
 
 
 def game_path(gameIndex):
@@ -32,6 +32,9 @@ def salty_sha256(value, nonce):
         "nonce": nonce,
     }
     return hashlib.sha3_256(json.dumps(data, sort_keys=True).encode()).hexdigest()
+
+def sha256(value):
+    return hashlib.sha256(value.encode('utf-8')).hexdigest()
 
 
 def permute(arr):
@@ -58,14 +61,8 @@ def copy_object(obj):
     return copy.deepcopy(obj)
 
 
-def xor_all_mod_n(hashes,n):
-    hex_hashes = [int(h, 16) for h in hashes]
-    num = (functools.reduce(operator.xor, hex_hashes)) % n
-    return num
-
-
 def pseudo_random_num(seed):
-    return random.RandomState(seed)
+    return random.RandomState(int(seed,16)%2**32)
 
 
 def get_exponent(m,n_power_e):

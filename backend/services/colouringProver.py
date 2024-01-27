@@ -32,6 +32,7 @@ class ColouringProver(ZKProverService):
             zkProof = self._colouring_prover.construct_proof()
             zkProof.serialize(self.__gameIndex,fiatShaIdx)
             print(f"Generated {get_proof_title(self.__gameIndex, fiatShaIdx)}")
+        return fiatShaCount
 
     def __challenge_handler(self, challenge):
         match challenge:
@@ -44,5 +45,4 @@ class ColouringProver(ZKProverService):
             case n if n == GAME_SIDE_LENGTH * TYPE_COUNT:
                 self._colouring_prover.reveal_filled_in_cells()
 
-cpzk = ColouringProver(1)
-cpzk.prove(tolerable_perc=0.005)
+

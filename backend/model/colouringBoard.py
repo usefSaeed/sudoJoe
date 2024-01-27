@@ -1,6 +1,6 @@
 from backend.model.colouringZKP import ColouringZKP
 from backend.model.proverBoard import ProverBoard
-from backend.backendGlobal import GAME_SIDE_LENGTH, SUBGRID_SIDE_LENGTH, TYPE_COUNT, pseudo_random_num,xor_all_mod_n
+from backend.backendGlobal import GAME_SIDE_LENGTH, SUBGRID_SIDE_LENGTH, TYPE_COUNT, pseudo_random_num,sha256
 
 
 class ColouringBoard(ProverBoard):
@@ -18,11 +18,12 @@ class ColouringBoard(ProverBoard):
             for c in self.VALID_COORDINATES:
                 self._grid[r][c].set(p[int(self._grid[r][c])])
 
-    def __flatten_commitments(self):
-        result = []
+    def __conc_commitments(self):
+        result = ""
         for r in self.__committedSolution:
             for c in r:
-                result.append(c)
+                print("c",c)
+                result += c
         return result
 
     def commit(self):
@@ -34,7 +35,7 @@ class ColouringBoard(ProverBoard):
 
     def create_challenge(self):
         assert self.__committedSolution is not None
-        seed = xor_all_mod_n(self.__flatten_commitments(),2**32)
+        seed = sha256(self.__conc_commitments())
         rd = pseudo_random_num(seed)
         return rd.randint(self.CHALLENGE_RANGE)
 

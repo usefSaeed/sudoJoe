@@ -43,5 +43,4 @@ class ColouringVerifier(ZKVerifierService):
                 return self.__colouringVerifier.verify_filled_in_cells()
 
 
-cvzk = ColouringVerifier(1,146)
-cvzk.verify()
+

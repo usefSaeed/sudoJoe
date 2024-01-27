@@ -1,17 +1,8 @@
-import requests as requests
-from flask import Flask, render_template
+from backend.services.colouringProver import ColouringProver
+from frontend.services.colouringVerifier import ColouringVerifier
 
-app = Flask(__name__)
-
-
-@app.route('/')
-def hello_world():  # put application's code here
-    return render_template('home.html', name='Home',)
-
-@app.route('/game')
-def generate_game():
-    pass
-
-
-if __name__ == '__main__':
-    app.run()
+GAME_INDEX = 1
+cpzk = ColouringProver(GAME_INDEX)
+proofSize = cpzk.prove(tolerable_perc=0.005)
+cvzk = ColouringVerifier(GAME_INDEX,proofSize)
+cvzk.verify()

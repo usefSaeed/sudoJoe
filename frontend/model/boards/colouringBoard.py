@@ -1,7 +1,7 @@
 from frontend.model.proofBusts.colouringCorrectnessBust import ColouringCorrectnessBust
 from frontend.model.proofBusts.commitmentBust import CommitmentBust
 from frontend.model.boards.verifierBoard import VerifierBoard
-from frontend.frontendGlobal import GAME_SIDE_LENGTH, SUBGRID_SIDE_LENGTH, TYPE_COUNT, pseudo_random_num,xor_all_mod_n
+from frontend.frontendGlobal import GAME_SIDE_LENGTH, SUBGRID_SIDE_LENGTH, TYPE_COUNT, pseudo_random_num,sha256
 
 
 class ColouringBoard(VerifierBoard):
@@ -17,11 +17,11 @@ class ColouringBoard(VerifierBoard):
         self.__revealedCells = revealedCells
         self.__proofBust = None
 
-    def __flatten_commitments(self):
-        result = []
+    def __conc_commitments(self):
+        result = ""
         for r in self.__commitments:
             for c in r:
-                result.append(c)
+                result += c
         return result
 
     def place_commitments(self):
@@ -48,7 +48,7 @@ class ColouringBoard(VerifierBoard):
         return True
 
     def compute_challenge(self):
-        seed = xor_all_mod_n(self.__flatten_commitments(),2**32)
+        seed = sha256(self.__conc_commitments())
         rd = pseudo_random_num(seed)
         return rd.randint(self.CHALLENGE_RANGE)
 
